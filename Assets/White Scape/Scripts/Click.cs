@@ -14,7 +14,8 @@ public class HighlightTileOnClick : MonoBehaviour
     public Button Clear;
     public Button Host;
     public Button AP;
-    private bool isHostMode = false; // 是否处于Host模式
+    private bool isHostMode = false;
+    private bool isAPMode = false;// 是否处于Host模式
     private Vector3Int lastClickedPosition; // 存储最后点击的位置
 
     private void Start()
@@ -44,6 +45,10 @@ public class HighlightTileOnClick : MonoBehaviour
                 {
                     ChangeToHost(gridPosition);
                 }
+                if (isAPMode)
+                {
+                    ChangeToAp(gridPosition);
+                }
                 else
                 {
                     HighlightTile(gridPosition);
@@ -63,14 +68,22 @@ public class HighlightTileOnClick : MonoBehaviour
     // 进入AP选择模式
     void APOnClick()
     {
-        isHostMode = false; // 关闭Host模式
+        isHostMode = false; // 确保关闭Host模式
+        isAPMode = true; // 开启AP模式
         Debug.Log("AP mode activated");
     }
+    void ChangeToAp(Vector3Int position)
+    {
+        tilemap.SetTile(position, APTile); // 替换为APTile
+        StartCoroutine(ResetTileColor(position)); // 延时后重置颜色
+    }
+
 
     // 进入host选择模式
     void HostOnClick()
     {
         isHostMode = true; // 开启Host模式
+        isAPMode = false; 
         Debug.Log("Host mode activated");
     }
 
