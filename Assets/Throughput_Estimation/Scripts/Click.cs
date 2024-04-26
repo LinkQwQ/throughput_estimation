@@ -1,7 +1,10 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
+
+
 
 public class HighlightTileOnClick : MonoBehaviour
 {
@@ -11,12 +14,20 @@ public class HighlightTileOnClick : MonoBehaviour
     public Tile APTile; // 新的Tile用于替换
     public Tile HostTile; // Host模式下使用的Tile
     public UnityEngine.UI.Text Location;
+    //Button List
     public Button Clear;
     public Button Host;
     public Button AP;
+    public Button Save;
+    ////Button List
     private bool isHostMode = false;
     private bool isAPMode = false;// 是否处于Host模式
     private Vector3Int lastClickedPosition; // 存储最后点击的位置
+    private List<string[]> clickPositions = new List<string[]>(); // 用于存储所有点击的位置
+    
+    private int APnum = 0;
+    private int Hostnum = 0;
+
 
     private void Start()
     {
@@ -29,6 +40,8 @@ public class HighlightTileOnClick : MonoBehaviour
         ap.onClick.AddListener(APOnClick);
         host.onClick.AddListener(HostOnClick);
         clear.onClick.AddListener(ClearOnClick);
+        Save.onClick.AddListener(SaveOnClick);
+
     }
 
     private void Update()
@@ -37,17 +50,23 @@ public class HighlightTileOnClick : MonoBehaviour
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3Int gridPosition = tilemap.WorldToCell(mouseWorldPos); // 将鼠标位置转换为格子位置
+            
            
             if (tilemap.HasTile(gridPosition)) // 检测是否点击在有Tile的位置
             {
                 lastClickedPosition = gridPosition; // 更新最后点击的位置
+                
                 if (isHostMode)
                 {
                     ChangeToHost(gridPosition);
+                    Hostnum += 1;
+                    clickPositions.Add(new string[] { "Host"+Hostnum, gridPosition.x.ToString(), gridPosition.y.ToString(), "Host" }); // 添加坐标和一个描述
                 }
                 if (isAPMode)
                 {
                     ChangeToAp(gridPosition);
+                    APnum += 1;
+                    clickPositions.Add(new string[] { "AP"+APnum, gridPosition.x.ToString(), gridPosition.y.ToString(), "AP" }); // 添加坐标和一个描述
                 }
                 else
                 {
@@ -105,4 +124,16 @@ public class HighlightTileOnClick : MonoBehaviour
         yield return new WaitForSeconds(1); // 等待1秒
         tilemap.SetColor(position, originalColor); // 重置为原始颜色
     }
+
+    void SaveOnClick()
+    {
+        if (clickPositions.Count > 0)
+        {
+            SaveFile.WriteCSV(clickPositions.ToArray());
+            clickPositions.Clear(); // 清空列表以防重复写入
+        }
+    }
+    
+   
+
 }
