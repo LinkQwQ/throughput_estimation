@@ -342,6 +342,7 @@ MonoBehaviour:
   Clear: {fileID: 0}
   Host: {fileID: 0}
   AP: {fileID: 0}
+  Save: {fileID: 0}
 --- !u!19719996 &55118173
 TilemapCollider2D:
   m_ObjectHideFlags: 0
@@ -8739,6 +8740,7 @@ MonoBehaviour:
   Clear: {fileID: 810292779}
   Host: {fileID: 334823976}
   AP: {fileID: 1612462353}
+  Save: {fileID: 135913586}
 --- !u!19719996 &1926858104
 TilemapCollider2D:
   m_ObjectHideFlags: 0
