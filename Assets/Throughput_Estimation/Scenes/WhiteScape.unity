@@ -1933,7 +1933,7 @@ Tilemap:
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7735849, g: 0.7735849, b: 0.7735849, a: 1}
   m_Origin: {x: -8, y: -8, z: 0}
   m_Size: {x: 18, y: 17, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
@@ -2490,7 +2490,7 @@ GameObject:
   - component: {fileID: 355232485}
   - component: {fileID: 355232484}
   m_Layer: 0
-  m_Name: partitionWall
+  m_Name: PartitionWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7046,11 +7046,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d4fa70980d4842fca812dd86fe5571a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2
-  smoothTime: 8
+  moveSpeed: 3
+  smoothTime: 7
   zoomSpeed: 1
   minZoom: 5
   maxZoom: 20
+  boundaryPercentage: 0.1
 --- !u!4 &1338951438
 Transform:
   m_ObjectHideFlags: 0
@@ -9094,6 +9095,7 @@ GameObject:
   - component: {fileID: 1926858105}
   - component: {fileID: 1926858104}
   - component: {fileID: 1926858103}
+  - component: {fileID: 1926858107}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Untagged
@@ -9895,6 +9897,19 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1926858107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1926858101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f9db9c285cbe4649a2a02ef3dcf8960, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WindowShow: 0
 --- !u!1 &1928132903
 GameObject:
   m_ObjectHideFlags: 0

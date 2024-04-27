@@ -12,7 +12,7 @@ public class CameraController : MonoBehaviour
     public float minZoom = 5f; // 最小缩放值
     public float maxZoom = 20f; // 最大缩放值
 
-    private float boundaryPercentage = 0.1f; // 边界百分比，这里设置为10%
+    public float boundaryPercentage = 0.05f; // 边界百分比，这里设置为10%
 
     void Update()
     {
