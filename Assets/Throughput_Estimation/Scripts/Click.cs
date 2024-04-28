@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
@@ -16,7 +17,7 @@ public class HighlightTileOnClick : MonoBehaviour
     public Tile HostTile; // Host模式下使用的Tile
     public UnityEngine.UI.Text Location;
     //Button List
-    public Button Clear;
+    //public Button Clear;
     public Button Host;
     public Button AP;
     public Button Save;
@@ -37,11 +38,11 @@ public class HighlightTileOnClick : MonoBehaviour
         
         Button host = Host.GetComponent<Button>();
         Button ap = AP.GetComponent<Button>();
-        Button clear = Clear.GetComponent<Button>();
+        //Button clear = Clear.GetComponent<Button>();
         
         ap.onClick.AddListener(APOnClick);
         host.onClick.AddListener(HostOnClick);
-        clear.onClick.AddListener(ClearOnClick);
+        //clear.onClick.AddListener(ClearOnClick);
         Save.onClick.AddListener(SaveOnClick);
 
     }
@@ -50,6 +51,11 @@ public class HighlightTileOnClick : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0)) // 检测鼠标左键点击
         {
+            if (EventSystem.current.IsPointerOverGameObject()) // 检查点击是否在UI元素上
+            {
+                Debug.Log("Clicked on UI, ignoring gameplay interaction.");
+                return; // 如果在UI元素上点击，忽略后续的游戏内操作
+            }
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3Int gridPosition = tilemap.WorldToCell(mouseWorldPos); // 将鼠标位置转换为格子位置
             
