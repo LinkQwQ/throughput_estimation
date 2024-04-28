@@ -60,16 +60,18 @@ public class HighlightTileOnClick : MonoBehaviour
                 {
                     ChangeToHost(gridPosition);
                     Hostnum += 1;
-                    //float New_X = gridPosition.x / 2;
-                    //float New_Y = gridPosition.y / 2;
-                    //clickPositions.Add(new string[] { "Host"+Hostnum, New_X.ToString(), New_Y.ToString(), "Host" }); // 添加坐标和一个描述
-                    clickPositions.Add(new string[] { "H"+Hostnum, gridPosition.x.ToString(), gridPosition.y.ToString(), "Host" }); // 添加坐标和一个描述
+                    float New_X = gridPosition.x / 2.0f;
+                    float New_Y = gridPosition.y / 2.0f;
+                    clickPositions.Add(new string[] { "H"+Hostnum, New_X.ToString(), New_Y.ToString(), "Host" }); // 添加坐标和一个描述
+                    //clickPositions.Add(new string[] { "H"+Hostnum, gridPosition.x.ToString(), gridPosition.y.ToString(), "Host" }); // 添加坐标和一个描述
                 }
                 if (isAPMode)
                 {
                     ChangeToAp(gridPosition);
                     APnum += 1;
-                    clickPositions.Add(new string[] { "AP"+APnum, gridPosition.x.ToString(), gridPosition.y.ToString(), "AP" }); // 添加坐标和一个描述
+                    float New_X = gridPosition.x / 2.0f;
+                    float New_Y = gridPosition.y / 2.0f;
+                    clickPositions.Add(new string[] { "AP"+APnum, New_X.ToString(), New_Y.ToString(), "AP" }); // 添加坐标和一个描述
                 }
                 else
                 {
