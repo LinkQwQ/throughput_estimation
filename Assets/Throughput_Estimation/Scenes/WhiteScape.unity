@@ -10471,17 +10471,19 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1338951436}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6d4fa70980d4842fca812dd86fe5571a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
-  smoothTime: 7
+  moveSpeed: 5
   zoomSpeed: 1
   minZoom: 5
-  maxZoom: 20
-  boundaryPercentage: 0.01
+  maxZoom: 30
+  minX: -30
+  maxX: 20
+  minY: -15
+  maxY: 15
 --- !u!4 &1338951438
 Transform:
   m_ObjectHideFlags: 0
@@ -29621,8 +29623,8 @@ Transform:
   m_GameObject: {fileID: 2101211171}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 25.8, y: 0.4, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 1}
+  m_LocalPosition: {x: 29, y: 13.1, z: 0}
+  m_LocalScale: {x: 200, y: 200, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 269034006}

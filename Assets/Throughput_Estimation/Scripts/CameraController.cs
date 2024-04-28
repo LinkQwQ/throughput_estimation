@@ -9,6 +9,11 @@ public class CameraController : MonoBehaviour
     public float minZoom = 5f; // 最小缩放值
     public float maxZoom = 20f; // 最大缩放值
 
+    public float minX = -10f; // 摄像机X轴最小移动范围
+    public float maxX = 10f; // 摄像机X轴最大移动范围
+    public float minY = -10f; // 摄像机Y轴最小移动范围
+    public float maxY = 10f; // 摄像机Y轴最大移动范围
+
     void Update()
     {
         // 方向键移动
@@ -16,7 +21,13 @@ public class CameraController : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 moveDirection = new Vector3(horizontalInput, verticalInput, 0);
-        transform.position += moveDirection * moveSpeed * Time.deltaTime;
+        Vector3 newPosition = transform.position + moveDirection * moveSpeed * Time.deltaTime;
+
+        // 限制摄像机的移动范围
+        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
+        newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
+
+        transform.position = newPosition;
 
         // 滚轮缩放
         float scroll = Input.GetAxis("Mouse ScrollWheel");
