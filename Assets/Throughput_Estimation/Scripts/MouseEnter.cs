@@ -35,7 +35,8 @@ public class MouseEnter : MonoBehaviour
             style1.normal.textColor = Color.black;
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3Int gridPosition = tilemap.WorldToCell(mouseWorldPos);
-            Vector2Int gridPosition2D = new Vector2Int(gridPosition.x, gridPosition.y);
+            Vector2 gridPosition2D = new Vector2(gridPosition.x/2.0f, gridPosition.y/2.0f);
+  
             GUI.Label(new Rect(Input.mousePosition.x,Screen.height - Input.mousePosition.y,400,50),gridPosition2D.ToString(),style1);
         }
     }
