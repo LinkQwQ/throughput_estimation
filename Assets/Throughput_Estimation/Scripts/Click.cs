@@ -9,9 +9,10 @@ using UnityEngine.UI;
 public class HighlightTileOnClick : MonoBehaviour
 {
     public Tilemap tilemap; // 引用Tilemap
-    public Color highlightColor = Color.yellow; // 高亮颜色，默认为黄色
+    private Color highlightColor = Color.red; // 高亮颜色，默认为黄色
     private Color originalColor; // 用于存储原始颜色
-    public Tile APTile; // 新的Tile用于替换
+    public Tile APTile;
+    public Tile APDualTile;// 新的Tile用于替换
     public Tile HostTile; // Host模式下使用的Tile
     public UnityEngine.UI.Text Location;
     //Button List
@@ -24,6 +25,7 @@ public class HighlightTileOnClick : MonoBehaviour
     private bool isAPMode = false;// 是否处于Host模式
     private Vector3Int lastClickedPosition; // 存储最后点击的位置
     private List<string[]> clickPositions = new List<string[]>(); // 用于存储所有点击的位置
+    private Vector3Int? previousAPPosition = null;
     
     private int APnum = 0;
     private int Hostnum = 0;
@@ -67,7 +69,18 @@ public class HighlightTileOnClick : MonoBehaviour
                 }
                 if (isAPMode)
                 {
-                    ChangeToAp(gridPosition);
+                    if (previousAPPosition.HasValue && previousAPPosition.Value == gridPosition)
+                    {
+                        // 同时更改颜色以突出显示重复点击
+                        //tilemap.SetColor(gridPosition, highlightColor);
+                        tilemap.SetTile(gridPosition, APDualTile);
+                        Debug.Log("Repeated click on the same tile in AP mode.");
+                    }
+                    else
+                    {
+                        ChangeToAp(gridPosition);
+                        previousAPPosition = gridPosition; // 更新存储的位置
+                    }
                     APnum += 1;
                     float New_X = gridPosition.x / 2.0f;
                     float New_Y = gridPosition.y / 2.0f;
@@ -86,7 +99,7 @@ public class HighlightTileOnClick : MonoBehaviour
     void HighlightTile(Vector3Int position)
     {
         tilemap.SetColor(position, highlightColor); // 设置高亮颜色
-        StartCoroutine(ResetTileColor(position)); // 延时后重置颜色
+        
     }
 
     // 进入AP选择模式
@@ -94,7 +107,7 @@ public class HighlightTileOnClick : MonoBehaviour
     {
         isHostMode = false; // 确保关闭Host模式
         isAPMode = true; // 开启AP模式
-        Debug.Log("AP mode activated");
+
     }
     void ChangeToAp(Vector3Int position)
     {
@@ -108,7 +121,7 @@ public class HighlightTileOnClick : MonoBehaviour
     {
         isHostMode = true; // 开启Host模式
         isAPMode = false; 
-        Debug.Log("Host mode activated");
+
     }
 
     void ChangeToHost(Vector3Int position)
@@ -121,7 +134,7 @@ public class HighlightTileOnClick : MonoBehaviour
     void ClearOnClick()
     {
         isHostMode = false; // 关闭Host模式
-        Debug.Log("Clear mode activated");
+
     }
 
     IEnumerator ResetTileColor(Vector3Int position)
