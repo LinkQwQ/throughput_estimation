@@ -37,7 +37,7 @@ public class MouseEnter : MonoBehaviour
             Vector3Int gridPosition = tilemap.WorldToCell(mouseWorldPos);
             Vector2 gridPosition2D = new Vector2(gridPosition.x/2.0f, gridPosition.y/2.0f);
   
-            GUI.Label(new Rect(Input.mousePosition.x,Screen.height - Input.mousePosition.y,400,50),gridPosition2D.ToString(),style1);
+            GUI.Label(new Rect(Input.mousePosition.x,Screen.height - Input.mousePosition.y,400,50),gridPosition2D.ToString("F1"),style1);
         }
     }
 
