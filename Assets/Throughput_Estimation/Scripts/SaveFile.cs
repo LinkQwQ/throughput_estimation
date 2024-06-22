@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class SaveFile : MonoBehaviour
 {
-    // 设定默认的文件路径和头部
-    private static string defaultFilePath = "Assets/Throughput_Estimation/Csv/coordinates_Temp.csv";
+    // 设定默认的文件名
+    private static string fileName = "coordinates_Temp.csv";
+
+    // 获取可执行文件所在目录
+    private static string defaultFilePath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, fileName);
+
     private static string[] defaultHeaders = new string[] { "Name", "X", "Y", "Type" };
 
     // 一个公开的静态方法，只需要外部提供数据
@@ -27,5 +31,7 @@ public class SaveFile : MonoBehaviour
         {
             writer.Write(csvContent.ToString());
         }
+
+        Debug.Log("CSV file saved to: " + defaultFilePath);
     }
 }
