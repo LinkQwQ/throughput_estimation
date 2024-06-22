@@ -3,6 +3,7 @@ using UnityEngine.Tilemaps;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -21,6 +22,8 @@ public class HighlightTileOnClick : MonoBehaviour
     public Button Host;
     public Button AP;
     public Button Save;
+
+    public Button Reset;
     ////Button List
     private bool isHostMode = false;
     private bool isAPMode = false;// 是否处于Host模式
@@ -44,7 +47,7 @@ public class HighlightTileOnClick : MonoBehaviour
         host.onClick.AddListener(HostOnClick);
         //clear.onClick.AddListener(ClearOnClick);
         Save.onClick.AddListener(SaveOnClick);
-
+        Reset.onClick.AddListener(ReloadCurrentScene);
     }
 
     private void Update()
@@ -157,7 +160,14 @@ public class HighlightTileOnClick : MonoBehaviour
             clickPositions.Clear(); // 清空列表以防重复写入
         }
     }
-    
+
+    void ReloadCurrentScene()
+    {
+        string currentSceneName = SceneManager.GetActiveScene().name;
+
+        // 重新加载当前场景
+        SceneManager.LoadScene(currentSceneName);
+    }
    
 
 }
