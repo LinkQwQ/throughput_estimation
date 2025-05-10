@@ -418,6 +418,7 @@ MonoBehaviour:
   AP: {fileID: 0}
   Save: {fileID: 0}
   Reset: {fileID: 0}
+  wallTilemaps: []
 --- !u!19719996 &55118173
 TilemapCollider2D:
   m_ObjectHideFlags: 0
@@ -14159,6 +14160,9 @@ MonoBehaviour:
   AP: {fileID: 1612462353}
   Save: {fileID: 135913586}
   Reset: {fileID: 2034243812}
+  wallTilemaps:
+  - {fileID: 80389135}
+  - {fileID: 355232486}
 --- !u!19719996 &1926858104
 TilemapCollider2D:
   m_ObjectHideFlags: 0
