@@ -6,100 +6,89 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-
-
 public class HighlightTileOnClick : MonoBehaviour
 {
-    public Tilemap tilemap; // 引用Tilemap
-    private Color highlightColor = Color.red; // 高亮颜色，默认为黄色
-    private Color originalColor; // 用于存储原始颜色
+    public Tilemap tilemap;
+    private Color highlightColor = Color.red;
+    private Color originalColor;
     public Tile APTile;
-    public Tile APDualTile;// 新的Tile用于替换
-    public Tile HostTile; // Host模式下使用的Tile
+    public Tile APDualTile;
+    public Tile HostTile;
     public UnityEngine.UI.Text Location;
-    //Button List
-    //public Button Clear;
+
     public Button Host;
     public Button AP;
     public Button Save;
-
     public Button Reset;
-    ////Button List
+
+    public List<Tilemap> wallTilemaps; // ✅ 拖入 CorridorWall、PartitionWall
+
     private bool isHostMode = false;
-    private bool isAPMode = false;// 是否处于Host模式
-    private Vector3Int lastClickedPosition; // 存储最后点击的位置
-    private List<string[]> clickPositions = new List<string[]>(); // 用于存储所有点击的位置
+    private bool isAPMode = false;
+    private Vector3Int lastClickedPosition;
     private Vector3Int? previousAPPosition = null;
-    
     private int APnum = 0;
     private int Hostnum = 0;
 
+    private List<string[]> clickPositions = new List<string[]>();
+    private Dictionary<string, Vector3Int> apPositions = new Dictionary<string, Vector3Int>();
+    private Dictionary<string, Vector3Int> hostPositions = new Dictionary<string, Vector3Int>();
 
     private void Start()
     {
-        originalColor = tilemap.color; // 在开始时获取Tilemap的初始颜色
-        
-        Button host = Host.GetComponent<Button>();
-        Button ap = AP.GetComponent<Button>();
-        //Button clear = Clear.GetComponent<Button>();
-        
-        ap.onClick.AddListener(APOnClick);
-        host.onClick.AddListener(HostOnClick);
-        //clear.onClick.AddListener(ClearOnClick);
+        originalColor = tilemap.color;
+        AP.onClick.AddListener(APOnClick);
+        Host.onClick.AddListener(HostOnClick);
         Save.onClick.AddListener(SaveOnClick);
         Reset.onClick.AddListener(ReloadCurrentScene);
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0)) // 检测鼠标左键点击
+        if (Input.GetMouseButtonDown(0))
         {
-            if (EventSystem.current.IsPointerOverGameObject()) // 检查点击是否在UI元素上
-            {
-                Debug.Log("Clicked on UI, ignoring gameplay interaction.");
-                return; // 如果在UI元素上点击，忽略后续的游戏内操作
-            }
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3Int gridPosition = tilemap.WorldToCell(mouseWorldPos); // 将鼠标位置转换为格子位置
-            
-           
-            if (tilemap.HasTile(gridPosition)) // 检测是否点击在有Tile的位置
+            Vector3Int gridPosition = tilemap.WorldToCell(mouseWorldPos);
+
+            if (tilemap.HasTile(gridPosition))
             {
-                lastClickedPosition = gridPosition; // 更新最后点击的位置
-                
+                lastClickedPosition = gridPosition;
+
                 if (isHostMode)
                 {
                     ChangeToHost(gridPosition);
-                    Hostnum += 1;
+                    Hostnum++;
                     float New_X = gridPosition.x / 2.0f;
                     float New_Y = gridPosition.y / 2.0f;
-                    clickPositions.Add(new string[] { "H"+Hostnum, New_X.ToString(), New_Y.ToString(), "Host" }); // 添加坐标和一个描述
-                    //clickPositions.Add(new string[] { "H"+Hostnum, gridPosition.x.ToString(), gridPosition.y.ToString(), "Host" }); // 添加坐标和一个描述
+                    string id = "H" + Hostnum;
+                    clickPositions.Add(new string[] { id, New_X.ToString(), New_Y.ToString(), "Host" });
+                    hostPositions[id] = gridPosition;
                 }
-                if (isAPMode)
+                else if (isAPMode)
                 {
                     if (previousAPPosition.HasValue && previousAPPosition.Value == gridPosition)
                     {
-                        // 同时更改颜色以突出显示重复点击
-                        //tilemap.SetColor(gridPosition, highlightColor);
                         tilemap.SetTile(gridPosition, APDualTile);
-                        Debug.Log("Repeated click on the same tile in AP mode.");
                     }
                     else
                     {
                         ChangeToAp(gridPosition);
-                        previousAPPosition = gridPosition; // 更新存储的位置
+                        previousAPPosition = gridPosition;
                     }
-                    APnum += 1;
+                    APnum++;
                     float New_X = gridPosition.x / 2.0f;
                     float New_Y = gridPosition.y / 2.0f;
-                    clickPositions.Add(new string[] { "AP"+APnum, New_X.ToString(), New_Y.ToString(), "AP" }); // 添加坐标和一个描述
+                    string id = "AP" + APnum;
+                    clickPositions.Add(new string[] { id, New_X.ToString(), New_Y.ToString(), "AP" });
+                    apPositions[id] = gridPosition;
                 }
                 else
                 {
                     HighlightTile(gridPosition);
                 }
-                Debug.Log("Tile clicked at position: " + gridPosition);
+
                 Location.text = gridPosition.ToString();
             }
         }
@@ -107,49 +96,28 @@ public class HighlightTileOnClick : MonoBehaviour
 
     void HighlightTile(Vector3Int position)
     {
-        tilemap.SetColor(position, highlightColor); // 设置高亮颜色
-        
+        tilemap.SetColor(position, highlightColor);
     }
 
-    // 进入AP选择模式
-    void APOnClick()
-    {
-        isHostMode = false; // 确保关闭Host模式
-        isAPMode = true; // 开启AP模式
+    void APOnClick() { isAPMode = true; isHostMode = false; }
+    void HostOnClick() { isHostMode = true; isAPMode = false; }
 
-    }
     void ChangeToAp(Vector3Int position)
     {
-        tilemap.SetTile(position, APTile); // 替换为APTile
-        StartCoroutine(ResetTileColor(position)); // 延时后重置颜色
-    }
-
-
-    // 进入host选择模式
-    void HostOnClick()
-    {
-        isHostMode = true; // 开启Host模式
-        isAPMode = false; 
-
+        tilemap.SetTile(position, APTile);
+        StartCoroutine(ResetTileColor(position));
     }
 
     void ChangeToHost(Vector3Int position)
     {
-        tilemap.SetTile(position, HostTile); // 替换为HostTile
-        StartCoroutine(ResetTileColor(position)); // 延时后重置颜色
-    }
-    
-    // 清除
-    void ClearOnClick()
-    {
-        isHostMode = false; // 关闭Host模式
-
+        tilemap.SetTile(position, HostTile);
+        StartCoroutine(ResetTileColor(position));
     }
 
     IEnumerator ResetTileColor(Vector3Int position)
     {
-        yield return new WaitForSeconds(1); // 等待1秒
-        tilemap.SetColor(position, originalColor); // 重置为原始颜色
+        yield return new WaitForSeconds(1);
+        tilemap.SetColor(position, originalColor);
     }
 
     void SaveOnClick()
@@ -157,17 +125,72 @@ public class HighlightTileOnClick : MonoBehaviour
         if (clickPositions.Count > 0)
         {
             SaveFile.WriteCSV(clickPositions.ToArray());
-            clickPositions.Clear(); // 清空列表以防重复写入
+
+            List<string[]> wallResults = new List<string[]>();
+            wallResults.Add(new string[] { "host", "ap", "w1", "w2", "w3", "w4", "w5", "w6" });
+
+            foreach (var h in hostPositions)
+            {
+                foreach (var a in apPositions)
+                {
+                    int[] walls = CountWallTypesBetween(h.Value, a.Value);
+                    wallResults.Add(new string[] {
+                        h.Key, a.Key,
+                        walls[1].ToString(), walls[2].ToString(),
+                        walls[3].ToString(), walls[4].ToString(), walls[5].ToString(), walls[6].ToString()
+                    });
+                }
+            }
+
+            SaveFile.WriteWallStatsCSV(wallResults.ToArray());
+            clickPositions.Clear();
         }
     }
 
     void ReloadCurrentScene()
     {
-        string currentSceneName = SceneManager.GetActiveScene().name;
-
-        // 重新加载当前场景
-        SceneManager.LoadScene(currentSceneName);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-   
 
+    int[] CountWallTypesBetween(Vector3Int start, Vector3Int end)
+    {
+        int[] counts = new int[7];
+        int x0 = start.x, y0 = start.y;
+        int x1 = end.x, y1 = end.y;
+        int dx = Mathf.Abs(x1 - x0), dy = Mathf.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+
+        while (true)
+        {
+            Vector3Int pos = new Vector3Int(x0, y0, 0);
+
+            foreach (var wallMap in wallTilemaps)
+            {
+                TileBase tile = wallMap.GetTile(pos);
+                if (tile != null)
+                {
+                    Debug.Log($"🧱 Detected tile at {pos} on {wallMap.name} with tile: {tile.name}");
+                    string layerName = wallMap.transform.name;
+                    int wallType = -1;
+
+                    if (layerName == "CorridorWall") wallType = 1;
+                    else if (layerName == "PartitionWall") wallType = 2;
+                    // 可拓展更多判断
+
+                    if (wallType >= 0 && wallType < 7)
+                    {
+                        counts[wallType]++;
+                    }
+                }
+            }
+
+            if (x0 == x1 && y0 == y1) break;
+            int e2 = 2 * err;
+            if (e2 > -dy) { err -= dy; x0 += sx; }
+            if (e2 < dx) { err += dx; y0 += sy; }
+        }
+
+        return counts;
+    }
 }
